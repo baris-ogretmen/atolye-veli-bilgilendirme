@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Değişim Koleji - Atölye Gelişim Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050a18;
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --success: #39ff14;
+            --warning: #ffb800;
+            --danger: #ff003c;
+            --card-bg: rgba(10, 16, 30, 0.75);
+            --modal-bg: rgba(5, 11, 20, 0.95);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(188, 19, 254, 0.05) 0%, transparent 40%);
+            color: white; padding: 40px 20px; min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header { text-align: center; margin-bottom: 40px; animation: fadeInDown 1s ease; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.8rem; color: var(--neon-blue); text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); margin-bottom: 10px; letter-spacing: 2px; }
+        h1 span { color: white; }
+        .subtitle { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; color: #8892b0; letter-spacing: 2px; text-transform: uppercase; }
+
+        .fomo-banner {
+            background: linear-gradient(90deg, rgba(255,0,60,0.15), rgba(255,184,0,0.15));
+            border: 1px solid var(--warning); padding: 12px 25px; border-radius: 30px;
+            display: inline-flex; align-items: center; gap: 10px; margin-top: 25px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255,184,0,0.2);
+        }
+        .fomo-banner:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,184,0,0.4); }
+        .fomo-text { color: var(--warning); font-weight: bold; font-size: 0.95rem; }
+
+        /* --- STATÜLER --- */
+        .dashboard-stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 50px; flex-wrap: wrap; }
+        .stat-box { background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 15px 30px; border-radius: 12px; text-align: center; backdrop-filter: blur(5px); box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.05); }
+        .stat-num { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--success); text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); }
+        .stat-label { font-size: 0.8rem; color: #8892b0; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+        /* --- GÖRÜNÜM KONTROLLERİ --- */
+        #main-view { display: block; animation: fadeIn 0.5s ease; max-width: 1400px; margin: 0 auto;}
+        #detail-view { display: none; animation: fadeIn 0.5s ease; max-width: 1200px; margin: 0 auto; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- ÖĞRENCİ KARTLARI (YATAY SLİDER TASARIMI) --- */
+        .section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; color: white; margin-bottom: 20px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; display: inline-block;}
+        
+        .student-slider { display: flex; gap: 25px; overflow-x: auto; padding-bottom: 30px; margin-bottom: 40px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .student-slider::-webkit-scrollbar { height: 8px; }
+        .student-slider::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+        .student-slider::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+
+        .student-card {
+            min-width: 320px; scroll-snap-align: start; flex: 0 0 auto;
+            background: var(--card-bg); border-radius: 20px; padding: 25px; position: relative; overflow: hidden; transition: all 0.4s ease; backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 255, 0.1); display: flex; flex-direction: column; justify-content: space-between; z-index: 1;
+        }
+        
+        /* Dönen Neon Kenarlık Efekti */
+        .student-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--neon-blue));
+            animation: rotate 4s linear infinite; opacity: 0.2; z-index: -1;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        .student-card:hover { transform: translateY(-10px); border-color: var(--neon-blue); box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .student-name { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 5px; text-transform: uppercase; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+        .parent-name { font-size: 0.8rem; color: #6c7a9c; }
+        
+        .rank-badge { background: rgba(188, 19, 254, 0.15); color: #e08fff; border: 1px solid rgba(188, 19, 254, 0.3); padding: 5px 12px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-size: 0.65rem; text-align: center; }
+        .rank-badge.elite { background: rgba(57, 255, 20, 0.1); color: var(--success); border-color: rgba(57, 255, 20, 0.3); }
+        .rank-badge.pro { background: rgba(255, 184, 0, 0.1); color: var(--warning); border-color: rgba(255, 184, 0, 0.3); }
+
+        .skills-section { margin-bottom: 20px; flex-grow: 1; }
+        .badges-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Renkli Rozetler */
+        .skill-zeka { color: #ff00e6; border-color: rgba(255, 0, 230, 0.3); }
+        .skill-kodlama { color: var(--neon-blue); border-color: rgba(0, 242, 255, 0.3); }
+        .skill-dikkat { color: var(--warning); border-color: rgba(255, 184, 0, 0.3); }
+        .skill-yz { color: var(--danger); border-color: rgba(255, 0, 60, 0.3); }
+        .skill-guvenlik { color: var(--success); border-color: rgba(57, 255, 20, 0.3); }
+
+        .view-btn { 
+            background: rgba(0, 242, 255, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); 
+            width: 100%; padding: 12px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-weight: bold; 
+            cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.1);
+        }
+        .view-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+
+
+        /* --- ANA EKRAN: ATÖLYE ÜSLERİ --- */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        
+        .neon-base-card {
+            background: var(--card-bg); border-radius: 20px; padding: 30px; position: relative; overflow: hidden; transition: all 0.4s ease; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; z-index: 1;
+        }
+        
+        .neon-base-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--border-color, var(--neon-blue)));
+            animation: rotate 4s linear infinite; opacity: 0.15; z-index: -1;
+        }
+
+        .neon-base-card:hover { transform: translateY(-10px); border-color: var(--border-color); box-shadow: 0 0 30px var(--shadow-color); }
+
+        .base-icon { font-size: 4rem; margin-bottom: 15px; text-shadow: 0 0 20px var(--border-color); }
+        .base-title { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: white; margin-bottom: 10px; text-transform: uppercase; }
+        .base-count { background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 20px; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--border-color); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        
+        .enter-btn { background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2); width: 100%; padding: 12px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-weight: bold; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .neon-base-card:hover .enter-btn { background: var(--border-color); color: #000; border-color: var(--border-color); box-shadow: 0 0 20px var(--shadow-color); }
+
+        /* --- DETAY EKRANI (ATÖLYE İÇİ) --- */
+        .back-btn { background: rgba(0, 242, 255, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 10px 20px; border-radius: 8px; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+
+        .detail-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .detail-icon { font-size: 4rem; }
+        .detail-title { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: white; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tab-btn { background: transparent; border: none; color: #8892b0; padding: 12px 25px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; position: relative; }
+        .tab-btn.active { color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 3px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        /* Müfredat Kutuları */
+        .curriculum-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .curriculum-box h4 { margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; font-family: 'Orbitron', sans-serif; }
+        .curriculum-box p { color: #cbd5e1; font-size: 0.95rem; line-height: 1.7; }
+        
+        .vision-box { border-left: 4px solid var(--neon-purple); } .vision-box h4 { color: var(--neon-purple); }
+        .info-box { border-left: 4px solid var(--neon-blue); } .info-box h4 { color: var(--neon-blue); }
+        .outcome-box { border-left: 4px solid var(--success); } .outcome-box h4 { color: var(--success); }
+        .homework-box { border-left: 4px solid var(--warning); background: rgba(255, 184, 0, 0.05); } .homework-box h4 { color: var(--warning); }
+
+        /* Öğrenci Listesi Grid (Detay İçinde) */
+        .student-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .mini-student-card { background: rgba(10, 16, 30, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; display: flex; align-items: flex-start; gap: 15px; transition: all 0.3s; }
+        .mini-student-card:hover { border-color: var(--neon-blue); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2); }
+        .std-avatar { width: 50px; height: 50px; min-width: 50px; background: rgba(0,242,255,0.1); border: 1px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.2rem; }
+        .std-info { flex-grow: 1; }
+        .std-info h5 { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; color: white; margin-bottom: 2px; text-transform: uppercase; }
+        .std-info p { font-size: 0.75rem; color: #8892b0; margin-bottom: 12px; }
+        
+        /* Mini Rozetler */
+        .std-other-workshops { display: flex; flex-wrap: wrap; gap: 6px; }
+        .micro-badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 6px; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
+        .micro-badge.current { font-weight: bold; box-shadow: 0 0 10px inset; border: 1px solid; }
+        .micro-badge.other { background: rgba(255,255,255,0.05); color: #6c7a9c; border: 1px solid rgba(255,255,255,0.1); opacity: 0.6; cursor: help; }
+        .micro-badge.other:hover { opacity: 1; background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); }
+
+        /* --- MODAL EKRANI (ÖĞRENCİ DETAY) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        
+        .modal-content { background: var(--modal-bg); width: 100%; max-width: 850px; max-height: 85vh; border-radius: 20px; border: 1px solid var(--neon-blue); overflow-y: auto; position: relative; padding: 35px; box-shadow: 0 0 50px rgba(0, 242, 255, 0.2); }
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+        
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: #8892b0; cursor: pointer; transition: color 0.3s; }
+        .close-btn:hover { color: var(--danger); }
+
+        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 25px; }
+        .modal-header h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: white; margin-bottom: 5px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .modal-header p { color: var(--neon-purple); font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: bold; letter-spacing: 1px; }
+
+        /* --- FİREBASE CANLI HAVUZ --- */
+        .feedback-section { margin-top: 40px; background: rgba(10, 16, 30, 0.8); padding: 40px; border-radius: 20px; border: 1px solid var(--neon-blue); max-width: 800px; margin-left: auto; margin-right: auto; box-shadow: 0 0 30px rgba(0, 242, 255, 0.1); position: relative;}
+        .feedback-section::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); }
+        .feedback-section h3 { color: white; font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; margin-bottom: 10px; text-align: center; }
+        .feedback-section h3 span { color: var(--neon-blue); }
+        .feedback-section p { color: #8892b0; font-size: 0.95rem; margin-bottom: 25px; text-align: center; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group input, .form-group textarea { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 10px; font-family: 'Inter', sans-serif; transition: all 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        
+        .submit-btn { background: var(--neon-blue); color: #000; font-weight: bold; font-family: 'Orbitron', sans-serif; padding: 16px; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; width: 100%; font-size: 1rem; letter-spacing: 1px; }
+        .submit-btn:hover { background: white; box-shadow: 0 0 25px var(--neon-blue); }
+
+        .footer { text-align: center; margin-top: 50px; padding-top: 20px; color: #6c7a9c; font-size: 0.9rem; }
+        .highlight { color: var(--neon-blue); font-weight: bold; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .detail-title { font-size: 1.6rem; line-height: 1.3; }
+            .feedback-section { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>DEĞİŞİM <span>KOLEJİ</span></h1>
+        <div class="subtitle">Atölye Kontrol Merkezi</div>
+        
+        <div class="fomo-banner" onclick="window.open('https://wa.me/905444976558?text=Barış%20Hocam%20merhaba,%20atölye%20sistemini%20inceledim.%20Çocuğum%20için%20kalan%20kontenjan%20var%20mı?','_blank')">
+            <span style="font-size: 1.2rem;">⚠️</span>
+            <span class="fomo-text">Atölye Kayıtları Kapanmak Üzere! Bilgi Almak İçin Tıklayın</span>
+        </div>
+    </header>
+
+    <div id="main-view">
+        <div class="dashboard-stats">
+            <div class="stat-box">
+                <div class="stat-num">5</div>
+                <div class="stat-label">Aktif Atölye</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" style="color: var(--neon-purple); text-shadow: 0 0 10px rgba(188,19,254,0.5);">21</div>
+                <div class="stat-label">Onaylı Öğrenci</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,242,255,0.5);">1. HAFTA</div>
+                <div class="stat-label">Eğitim Haftası</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🧑‍💻 Sistem Onaylı Öğrenci Profilleri</h2>
+        <div class="student-slider" id="studentSliderGrid">
+            </div>
+
+        <h2 class="section-title">🚀 Aktif Atölye Üsleri</h2>
+        <div class="grid-container" id="workshopsGrid">
+            </div>
+        
+        <div class="feedback-section">
+            <h3>💬 Barış Hocam'a <span>Canlı Havuz</span></h3>
+            <p>Değerli velilerimiz, atölyelerimizle ilgili gözlemlerinizi veya sormak istediklerinizi doğrudan eğitim teknolojileri uzmanımız Barış Hoca'ya iletebilirsiniz.</p>
+            <div class="form-group"><input type="text" id="fbParentName" placeholder="Veli Adı Soyadı"></div>
+            <div class="form-group"><textarea id="fbMessage" placeholder="Örn: Barış hocam, algoritma görevini yaptık..."></textarea></div>
+            <button class="submit-btn" onclick="sendFeedback()">SİSTEME GÜVENLİ GÖNDER 🚀</button>
+        </div>
+    </div>
+
+    <div id="detail-view">
+        <button class="back-btn" onclick="goBack()">
+            <span>◀</span> ANA MERKEZE DÖN
+        </button>
+
+        <div class="detail-header">
+            <div class="detail-icon" id="detailIcon">🧠</div>
+            <div>
+                <div class="detail-title" id="detailTitle">Atölye Adı</div>
+                <div style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.9rem; margin-top: 5px;" id="detailCount">Kayıtlı Öğrenci: 0</div>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('mufredatTab', this)">📚 Atölye Müfredatı</button>
+            <button class="tab-btn" onclick="switchTab('ogrenciTab', this)">🧑‍💻 Kayıtlı Öğrenciler & Profiller</button>
+        </div>
+
+        <div class="tab-content active" id="mufredatTab">
+            <div class="curriculum-box vision-box">
+                <h4>🎯 Atölye Vizyonumuz</h4>
+                <p id="cVision">Vizyon metni</p>
+            </div>
+            <div class="curriculum-box info-box">
+                <h4 id="cHafta">📌 Hafta Bilgisi</h4>
+                <p id="cOgrenim">Öğrenim metni</p>
+            </div>
+            <div class="curriculum-box outcome-box">
+                <h4>✅ Kazanım (Neler Değişecek?)</h4>
+                <p id="cCikti">Çıktı metni</p>
+            </div>
+            <div class="curriculum-box homework-box">
+                <h4>🏠 Ev Görevi (Aile Katılımı)</h4>
+                <p id="cOdev">Ödev metni</p>
+            </div>
+        </div>
+
+        <div class="tab-content" id="ogrenciTab">
+            <div class="student-list-grid" id="studentsListGrid">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="studentDetailModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeStudentModal()">✖</span>
+            <div class="modal-header">
+                <h2 id="modalSName">Öğrenci Adı</h2>
+                <p id="modalSRank">Statü</p>
+            </div>
+            <div class="tabs-container" id="modalSTabs"></div>
+            <div id="modalSContentArea"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Değişim Koleji Interaktif Takip Sistemi | <span class="highlight">Eğitim Teknoloğu: Barış Hocam</span></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "API_KEY", authDomain: "DOMAIN", databaseURL: "URL", projectId: "ID", storageBucket: "BUCKET", messagingSenderId: "SENDER", appId: "APP" };
+        let db; try { const app = initializeApp(firebaseConfig); db = getDatabase(app); } catch (e) { }
+
+        window.sendFeedback = function() {
+            const name = document.getElementById('fbParentName').value;
+            const msg = document.getElementById('fbMessage').value;
+            if(!name || !msg) { alert("Lütfen adınızı ve mesajınızı girin."); return; }
+            if(db) {
+                push(ref(db, 'veli_mesajlari'), { veliAdi: name, mesaj: msg, tarih: serverTimestamp() })
+                .then(() => { alert("✅ Mesajınız Barış Hoca'ya başarıyla iletildi!"); document.getElementById('fbParentName').value = ''; document.getElementById('fbMessage').value = ''; })
+                .catch((e) => alert("Hata: " + e.message));
+            } else {
+                alert("Mesajınız Canlı Havuza Alındı!\n\n(Not: Firebase bilgileri girildiğinde veritabanına kayıt edilecektir.)");
+                document.getElementById('fbMessage').value = '';
+            }
+        };
+
+        const atolyeData = {
+            "zeka": { 
+                kod: "zeka", ad: "1. Dijital ve Fiziksel Akıl-Zeka Oyunları", ikon: "🧠", color: "#ff00e6", shadow: "rgba(255, 0, 230, 0.5)", class: "skill-zeka",
+                vizyon: "Öğrencilerimiz geleneksel akıl oyunlarının yanı sıra, okulumuza özel dijital 'Zeka Arenası' platformunda satranç, mangala ve strateji oyunları oynayarak hem masada hem de ekranda çok boyutlu düşünme becerileri kazanacaklar.",
+                hafta: "1. HAFTA: Stratejik Düşünme Temelleri", ogrenim: "Geleneksel oyunlar üzerinden sebep-sonuç ilişkisi kurmayı ve olasılıkları hesaplamayı öğreniyoruz.", cikti: "Odaklanma süresinde artış ve dürtüsel kararlar yerine düşünerek karar verme yetisi.", odev: "Akşam yemeğinden sonra ailece oynanacak basit bir masa oyununda çocuğun 'kuralları yönetmesine' izin verin."
+            },
+            "kodlama": { 
+                kod: "kodlama", ad: "2. Algoritma ve Erken Dönem Kodlama", ikon: "🧩", color: "#00f2ff", shadow: "rgba(0, 242, 255, 0.5)", class: "skill-kodlama",
+                vizyon: "Ekran bağımlılığı yaratmayan 'bilgisayarsız (unplugged) kodlama' teknikleriyle başlayan bu sürecimizde, çocuklarımız erken yaşta oyun oynamayı değil, oyunların arka planındaki mantığı ve algoritmayı tasarlamayı öğrenecekler.",
+                hafta: "1. HAFTA: Bilgisayarsız Kodlama", ogrenim: "Günlük yaşamdaki problemleri adım adım çözme mantığını tasarlıyoruz.", cikti: "Karmaşık görevleri küçük, yönetilebilir parçalara bölebilme analitik yeteneğinin gelişimi.", odev: "Çocuğunuzdan sabah okula hazırlık sürecinin resimli haritasını çizmesini isteyin."
+            },
+            "dikkat": { 
+                kod: "dikkat", ad: "3. Bilişsel Beceri ve Dikkat Geliştirme", ikon: "🔍", color: "#ffb800", shadow: "rgba(255, 184, 0, 0.5)", class: "skill-dikkat",
+                vizyon: "Öğrencilerimizin görsel algısını, okuma hızını ve odaklanma sürelerini artırmak amacıyla, okulumuzun özel dijital araçlarıyla (Sihirli Okuyucu, Dikte sistemleri) desteklenen bilişsel egzersizler uygulanacaktır.",
+                hafta: "1. HAFTA: Görsel Takip ve İşitsel Odak", ogrenim: "Sihirli Okuyucu ve Dikte egzersizleri ile beyindeki dikkat dağıtıcıları filtreleme çalışması yapıyoruz.", cikti: "Sınıf içi yönergeleri tek seferde anlama ve görev bilincinde artış.", odev: "Evde 1 dakikalık sessizlik oyunu oynayın. Bu sürede duyduğunuz sesleri birbirinize söyleyin."
+            },
+            "yz": { 
+                kod: "yz", ad: "4. YZ Destekli Yazılım ve Web Geliştirme", ikon: "🚀", color: "#ff003c", shadow: "rgba(255, 0, 60, 0.5)", class: "skill-yz",
+                vizyon: "Üst kademeler için: Öğrencilerimiz artık eski usul ezberci kodlama yerine, günümüz teknoloji dünyasının merkezinde olan 'Yapay Zeka Destekli Geliştirme' modelini öğrenecek ve kendi dijital projelerini, web sitelerini hayata geçirecekler.",
+                hafta: "1. HAFTA: Makineler Nasıl Düşünür?", ogrenim: "Yapay zekanın sihir değil, verilerle çalışan bir sistem olduğunu simülasyonlarla inceliyoruz.", cikti: "Teknolojiye 'tüketici' olarak değil, 'komut veren' gözüyle bakmaya başlama.", odev: "Evdeki hangi eşyaların akıllı olduğunu birlikte listeleyin."
+            },
+            "guvenlik": { 
+                kod: "guvenlik", ad: "5. Dijital Erken Okuryazarlık ve Güvenli İnternet", ikon: "🛡️", color: "#39ff14", shadow: "rgba(57, 255, 20, 0.5)", class: "skill-guvenlik",
+                vizyon: "Çocuklarımızın internetin sınırsız dünyasında kaybolmaması, dijital ayak izlerini doğru yönetmesi ve siber tehlikelerden korunması en hassas noktamızdır. Öğrencilerimiz dijital vatandaş olarak yetişecekler.",
+                hafta: "1. HAFTA: Dijital Ayak İzi", ogrenim: "İnternette bastığımız yerlerde nasıl iz bıraktığımızı öğreniyoruz.", cikti: "Tablet/telefon kullanırken şüpheyle yaklaşma ve güvenlik bilinci.", odev: "Çocuğunuzla birlikte cihazlarınız için ortak bir 'Güvenli Aile Şifresi' belirleyin."
+            }
+        };
+
+        const ogrenciler = [
+            { ad: "Ayşe Nur Yılmaz", veli: "Aysel Yılmaz", atolyeler: ["kodlama"] },
+            { ad: "Çınar Balkanlı", veli: "Resmie Balkanlı", atolyeler: ["dikkat"] },
+            { ad: "Aras Mert Erçel", veli: "Mert Erçel", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Ahmet Emir Karslı", veli: "Erkan Karslı", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "İpek Emecen", veli: "Tamer Emecen", atolyeler: ["zeka"] },
+            { ad: "Rüzgar Zerdeşt Yılmaz", veli: "Zara Yılmaz", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Kuzey Ege Gögce", veli: "Güner Coşkun Gögce", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Beren Alpkan", veli: "Betül Alpkan", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Atlas Alpkan", veli: "Beren Alpkan", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Aras Alpkan", veli: "Beren Alpkan", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Ece Bahar Çilingir", veli: "Ebru Çilingir", atolyeler: ["zeka", "dikkat"] },
+            { ad: "Sümeyye Yadigar Arpa", veli: "Asuman Arpa", atolyeler: ["dikkat"] },
+            { ad: "Yasin Karslı", veli: "Esra Karslı", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Agâh Yıldırım", veli: "Sevcan Özer", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Kuzey Koca", veli: "Çilem Koca", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Asya Koca", veli: "Çilem Koca", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Ebrar Yılmaz", veli: "Mihriban Yılmaz", atolyeler: ["zeka", "dikkat"] },
+            { ad: "Sarp Samsunlu", veli: "Burcu Samsunlu", atolyeler: ["kodlama", "yz", "guvenlik"] },
+            { ad: "Yavuz Selim Ertürk", veli: "Nurten Ertürk", atolyeler: ["kodlama", "yz", "guvenlik"] },
+            { ad: "Poyraz Mert", veli: "Gülten Mert", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Talha İbrahimoğlu", veli: "Canan İbrahimoğlu", atolyeler: ["zeka", "kodlama", "dikkat"] }
+        ];
+
+        // 1. ANA EKRAN - YATAY ÖĞRENCİ KARTLARI (NEON FENERLİ)
+        const sSliderGrid = document.getElementById('studentSliderGrid');
+        
+        ogrenciler.forEach((ogrenci, index) => {
+            let count = ogrenci.atolyeler.length;
+            let rankClass = count === 5 ? "elite" : (count >= 3 ? "pro" : "");
+            let rankName = count === 5 ? "ELITE FULL-STACK" : (count >= 3 ? "PRO DEVELOPER" : "KOD KAŞİFİ");
+
+            let badgesHTML = ogrenci.atolyeler.map(kod => {
+                const data = atolyeData[kod];
+                let shortName = data.ad.split(' ')[1]; // Kısa isim
+                return `<div class="skill-badge ${data.class}"><span class="skill-icon">${data.ikon}</span> ${shortName}</div>`;
+            }).join('');
+
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            card.innerHTML = `
+                <div>
+                    <div class="card-header">
+                        <div>
+                            <div class="student-name">${ogrenci.ad}</div>
+                            <div class="parent-name">Veli: ${ogrenci.veli}</div>
+                        </div>
+                        <div class="rank-badge ${rankClass}">${rankName}<br><span style="font-size: 0.55rem; color: #fff;">Lvl ${count}</span></div>
+                    </div>
+                    <div class="skills-section">
+                        <div class="badges-container">${badgesHTML}</div>
+                    </div>
+                </div>
+                <button class="view-btn" onclick="openStudentModal(${index})">Öğrenci Detayı 🔍</button>
+            `;
+            sSliderGrid.appendChild(card);
+        });
+
+        // 2. ANA EKRAN - 5 ATÖLYE ÜSSÜ
+        const wGrid = document.getElementById('workshopsGrid');
+        
+        Object.keys(atolyeData).forEach(kod => {
+            const data = atolyeData[kod];
+            const count = ogrenciler.filter(ogr => ogr.atolyeler.includes(kod)).length;
+            
+            const card = document.createElement('div');
+            card.className = 'neon-base-card';
+            card.style.setProperty('--border-color', data.color);
+            card.style.setProperty('--shadow-color', data.shadow);
+            card.onclick = () => openDetailView(kod);
+
+            card.innerHTML = `
+                <div class="base-icon">${data.ikon}</div>
+                <div class="base-title">${data.ad}</div>
+                <div class="base-count">Sisteme Kayıtlı: <span style="color:white; font-weight:bold;">${count} Öğrenci</span></div>
+                <button class="enter-btn">ATÖLYEYE GİRİŞ YAP</button>
+            `;
+            wGrid.appendChild(card);
+        });
+
+        // 3. ATÖLYE DETAY EKRANINA GEÇİŞ
+        window.openDetailView = function(atolyeKod) {
+            const data = atolyeData[atolyeKod];
+            
+            document.getElementById('detailIcon').innerText = data.ikon;
+            document.getElementById('detailTitle').innerText = data.ad;
+            
+            document.getElementById('cVision').innerText = data.vizyon;
+            document.getElementById('cHafta').innerText = "📌 " + data.hafta;
+            document.getElementById('cOgrenim').innerText = data.ogrenim;
+            document.getElementById('cCikti').innerText = data.cikti;
+            document.getElementById('cOdev').innerText = data.odev;
+
+            const filteredStudents = ogrenciler.filter(ogr => ogr.atolyeler.includes(atolyeKod));
+            document.getElementById('detailCount').innerText = `SİSTEM ONAYLI ÖĞRENCİ: ${filteredStudents.length}`;
+            
+            const sGrid = document.getElementById('studentsListGrid');
+            sGrid.innerHTML = ''; 
+
+            filteredStudents.forEach((std, sIndex) => {
+                // Öğrencinin asıl indexini bul (Modal açmak için)
+                const realIndex = ogrenciler.findIndex(o => o.ad === std.ad);
+
+                const sCard = document.createElement('div');
+                sCard.className = 'mini-student-card';
+                const initials = std.ad.split(' ').map(n => n[0]).join('').substring(0,2);
+                
+                let badgesHTML = '<div class="std-other-workshops">';
+                std.atolyeler.forEach(k => {
+                    const d = atolyeData[k];
+                    if(k === atolyeKod) {
+                        badgesHTML += `<span class="micro-badge current" style="background:${d.color}33; color:${d.color}; border-color:${d.color}" title="${d.ad}">${d.ikon} Aktif</span>`;
+                    } else {
+                        let shortName = d.kod.charAt(0).toUpperCase() + d.kod.slice(1);
+                        badgesHTML += `<span class="micro-badge other" title="Diğer Kaydı: ${d.ad}">${d.ikon} ${shortName}</span>`;
+                    }
+                });
+                badgesHTML += '</div>';
+                
+                sCard.innerHTML = `
+                    <div class="std-avatar">${initials}</div>
+                    <div class="std-info">
+                        <h5>${std.ad}</h5>
+                        <p>Veli: ${std.veli}</p>
+                        ${badgesHTML}
+                        <button style="margin-top:10px; padding:5px 10px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:#8892b0; border-radius:5px; cursor:pointer; font-size:0.75rem;" onclick="event.stopPropagation(); openStudentModal(${realIndex})">Müfredatı Gör</button>
+                    </div>
+                `;
+                sGrid.appendChild(sCard);
+            });
+
+            switchTab('mufredatTab', document.querySelector('.tab-btn'));
+
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+
+        // 4. ÖĞRENCİ DETAY MODALI (Yatay menüdeki karta tıklanınca açılır)
+        window.openStudentModal = function(studentIndex) {
+            const std = ogrenciler[studentIndex];
+            document.getElementById('modalSName').innerText = std.ad;
+            
+            let count = std.atolyeler.length;
+            document.getElementById('modalSRank').innerText = "GÜNCEL STATÜ: " + (count === 5 ? "ELITE FULL-STACK" : (count >= 3 ? "PRO DEVELOPER" : "KOD KAŞİFİ"));
+
+            const tabsContainer = document.getElementById('modalSTabs');
+            const contentArea = document.getElementById('modalSContentArea');
+            tabsContainer.innerHTML = '';
+            contentArea.innerHTML = '';
+
+            std.atolyeler.forEach((kod, i) => {
+                const data = atolyeData[kod];
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${i === 0 ? 'active' : ''}`;
+                btn.innerText = data.ikon + " " + data.ad.split(' ')[1]; // Kısa ad
+                btn.onclick = () => switchStudentTab(i);
+                tabsContainer.appendChild(btn);
+
+                const content = document.createElement('div');
+                content.className = `tab-content ${i === 0 ? 'active' : ''}`;
+                content.id = `tabSContent-${i}`;
+                content.innerHTML = `
+                    <h3 style="color:${data.color}; margin-bottom:15px; font-family:'Rajdhani'">${data.ad}</h3>
+                    <div class="curriculum-box vision-box" style="border-left-color:${data.color}">
+                        <h4 style="color:${data.color}">🎯 Atölye Vizyonumuz</h4>
+                        <p>${data.vizyon}</p>
+                    </div>
+                    <div class="curriculum-box info-box" style="border-left-color:${data.color}">
+                        <h4 style="color:${data.color}">📌 ${data.hafta}</h4>
+                        <p>${data.ogrenim}</p>
+                    </div>
+                    <div class="curriculum-box outcome-box">
+                        <h4>✅ Kazanım (Neler Değişecek?)</h4>
+                        <p>${data.cikti}</p>
+                    </div>
+                    <div class="curriculum-box homework-box">
+                        <h4>🏠 Ev Görevi (Aile Katılımı)</h4>
+                        <p>${data.odev}</p>
+                    </div>
+                `;
+                contentArea.appendChild(content);
+            });
+
+            document.getElementById('studentDetailModal').classList.add('active');
+        };
+
+        window.closeStudentModal = function() { document.getElementById('studentDetailModal').classList.remove('active'); };
+
+        window.switchStudentTab = function(index) {
+            const tabs = document.getElementById('modalSTabs').children;
+            const contents = document.getElementById('modalSContentArea').children;
+            for(let i=0; i<tabs.length; i++) {
+                tabs[i].classList.toggle('active', i === index);
+                contents[i].classList.toggle('active', i === index);
+            }
+        };
+
+        // 5. GERİ DÖN VE ATÖLYE SEKME DEĞİŞTİRME
+        window.goBack = function() {
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
+        };
+
+        window.switchTab = function(tabId, btnElement) {
+            const container = btnElement.parentElement;
+            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const contentArea = container.nextElementSibling; // mufredatTab veya ogrenciTab olan div'lerin ana kapsayıcısı
+            document.getElementById('mufredatTab').classList.remove('active');
+            document.getElementById('ogrenciTab').classList.remove('active');
+            document.getElementById(tabId).classList.add('active');
+        };
+
+    </script>
+</body>
+</html>
