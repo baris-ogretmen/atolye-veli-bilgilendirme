@@ -202,8 +202,30 @@
         .submit-btn { background: var(--neon-blue); color: #000; font-weight: bold; font-family: 'Orbitron', sans-serif; padding: 16px; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; width: 100%; font-size: 1rem; letter-spacing: 1px; }
         .submit-btn:hover { background: white; box-shadow: 0 0 25px var(--neon-blue); }
 
-        .footer { text-align: center; margin-top: 50px; padding-top: 20px; color: #6c7a9c; font-size: 0.9rem; }
-        .highlight { color: var(--neon-blue); font-weight: bold; }
+        .footer { text-align: center; margin-top: 50px; padding-top: 20px; color: #6c7a9c; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .highlight { color: var(--neon-blue); font-weight: bold; cursor: pointer; } /* TIKLANABİLİR BARIŞ HOCAM YAZISI */
+
+        /* --- GİZLİ YÖNETİCİ PANELİ --- */
+        #admin-view { display: none; animation: fadeIn 0.5s ease; max-width: 900px; margin: 0 auto; padding-top: 40px;}
+        #loginScreen { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--danger); box-shadow: 0 0 30px rgba(255, 0, 60, 0.2); width: 100%; max-width: 400px; margin: 0 auto; text-align: center;}
+        #loginScreen h2 { font-family: 'Orbitron', sans-serif; color: var(--danger); margin-bottom: 25px; font-size: 1.8rem; }
+        #loginError { color: var(--danger); margin-top: 15px; font-size: 0.9rem; display: none; }
+        .admin-login-btn { background: var(--danger); color: #fff; font-family: 'Orbitron', sans-serif; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 1.1rem; margin-top: 10px; }
+        .admin-login-btn:hover { background: white; color: var(--danger); box-shadow: 0 0 20px var(--danger); }
+        
+        #dashboardScreen { display: none; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 30px; }
+        .dashboard-header h2 { font-family: 'Orbitron', sans-serif; color: var(--neon-blue); font-size: 2rem; }
+        .logout-btn { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s; }
+        .logout-btn:hover { background: var(--danger); color: white; box-shadow: 0 0 15px rgba(255,0,60,0.5); }
+        
+        .messages-container { display: flex; flex-direction: column; gap: 15px; }
+        .message-card { background: rgba(255,255,255,0.03); border-left: 4px solid var(--neon-blue); padding: 20px; border-radius: 8px; transition: all 0.3s; }
+        .msg-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-family: 'Rajdhani', sans-serif; }
+        .msg-sender { font-size: 1.2rem; font-weight: bold; color: white; }
+        .msg-date { font-size: 0.85rem; color: #8892b0; }
+        .msg-content { color: #cbd5e1; font-size: 1rem; line-height: 1.6; }
+        .no-msg { text-align: center; color: #8892b0; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; padding: 40px; }
 
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
@@ -214,114 +236,173 @@
 </head>
 <body>
 
-    <header>
-        <h1>DEĞİŞİM <span>KOLEJİ</span></h1>
-        <div class="subtitle">Atölye Kontrol Merkezi</div>
-        
-        <div class="fomo-banner" onclick="window.open('https://wa.me/905444976558?text=Barış%20Hocam%20merhaba,%20atölye%20sistemini%20inceledim.%20Çocuğum%20için%20kalan%20kontenjan%20var%20mı?','_blank')">
-            <span style="font-size: 1.2rem;">⚠️</span>
-            <span class="fomo-text">Atölye Kayıtları Kapanmak Üzere! Bilgi Almak İçin Tıklayın</span>
-        </div>
-    </header>
+    <div id="public-container">
+        <header>
+            <h1>DEĞİŞİM <span>KOLEJİ</span></h1>
+            <div class="subtitle">Atölye Kontrol Merkezi</div>
+            
+            <div class="fomo-banner" onclick="window.open('https://wa.me/905444976558?text=Barış%20Hocam%20merhaba,%20atölye%20sistemini%20inceledim.%20Çocuğum%20için%20kalan%20kontenjan%20var%20mı?','_blank')">
+                <span style="font-size: 1.2rem;">⚠️</span>
+                <span class="fomo-text">Atölye Kayıtları Kapanmak Üzere! Bilgi Almak İçin Tıklayın</span>
+            </div>
+        </header>
 
-    <div id="main-view">
-        <div class="dashboard-stats">
-            <div class="stat-box">
-                <div class="stat-num">5</div>
-                <div class="stat-label">Aktif Atölye</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-num" style="color: var(--neon-purple); text-shadow: 0 0 10px rgba(188,19,254,0.5);">21</div>
-                <div class="stat-label">Onaylı Öğrenci</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-num" style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,242,255,0.5);">1. HAFTA</div>
-                <div class="stat-label">Eğitim Haftası</div>
-            </div>
-        </div>
-
-        <h2 class="section-title">🧑‍💻 Sistem Onaylı Öğrenci Profilleri</h2>
-        <div class="student-slider" id="studentSliderGrid">
-            </div>
-
-        <h2 class="section-title">🚀 Aktif Atölye Üsleri</h2>
-        <div class="grid-container" id="workshopsGrid">
-            </div>
-        
-        <div class="feedback-section">
-            <h3>💬 Barış Hocam'a <span>Canlı Havuz</span></h3>
-            <p>Değerli velilerimiz, atölyelerimizle ilgili gözlemlerinizi veya sormak istediklerinizi doğrudan eğitim teknolojileri uzmanımız Barış Hoca'ya iletebilirsiniz.</p>
-            <div class="form-group"><input type="text" id="fbParentName" placeholder="Veli Adı Soyadı"></div>
-            <div class="form-group"><textarea id="fbMessage" placeholder="Örn: Barış hocam, algoritma görevini yaptık..."></textarea></div>
-            <button class="submit-btn" onclick="sendFeedback()">SİSTEME GÜVENLİ GÖNDER 🚀</button>
-        </div>
-    </div>
-
-    <div id="detail-view">
-        <button class="back-btn" onclick="goBack()">
-            <span>◀</span> ANA MERKEZE DÖN
-        </button>
-
-        <div class="detail-header">
-            <div class="detail-icon" id="detailIcon">🧠</div>
-            <div>
-                <div class="detail-title" id="detailTitle">Atölye Adı</div>
-                <div style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.9rem; margin-top: 5px;" id="detailCount">Kayıtlı Öğrenci: 0</div>
-            </div>
-        </div>
-
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('mufredatTab', this)">📚 Atölye Müfredatı</button>
-            <button class="tab-btn" onclick="switchTab('ogrenciTab', this)">🧑‍💻 Kayıtlı Öğrenciler & Profiller</button>
-        </div>
-
-        <div class="tab-content active" id="mufredatTab">
-            <div class="curriculum-box vision-box">
-                <h4>🎯 Atölye Vizyonumuz</h4>
-                <p id="cVision">Vizyon metni</p>
-            </div>
-            <div class="curriculum-box info-box">
-                <h4 id="cHafta">📌 Hafta Bilgisi</h4>
-                <p id="cOgrenim">Öğrenim metni</p>
-            </div>
-            <div class="curriculum-box outcome-box">
-                <h4>✅ Kazanım (Neler Değişecek?)</h4>
-                <p id="cCikti">Çıktı metni</p>
-            </div>
-            <div class="curriculum-box homework-box">
-                <h4>🏠 Ev Görevi (Aile Katılımı)</h4>
-                <p id="cOdev">Ödev metni</p>
-            </div>
-        </div>
-
-        <div class="tab-content" id="ogrenciTab">
-            <div class="student-list-grid" id="studentsListGrid">
+        <div id="main-view">
+            <div class="dashboard-stats">
+                <div class="stat-box">
+                    <div class="stat-num">5</div>
+                    <div class="stat-label">Aktif Atölye</div>
                 </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="studentDetailModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeStudentModal()">✖</span>
-            <div class="modal-header">
-                <h2 id="modalSName">Öğrenci Adı</h2>
-                <p id="modalSRank">Statü</p>
+                <div class="stat-box">
+                    <div class="stat-num" id="totalStudentCount" style="color: var(--neon-purple); text-shadow: 0 0 10px rgba(188,19,254,0.5);">29</div>
+                    <div class="stat-label">Onaylı Öğrenci</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,242,255,0.5);">1. HAFTA</div>
+                    <div class="stat-label">Eğitim Haftası</div>
+                </div>
             </div>
-            <div class="tabs-container" id="modalSTabs"></div>
-            <div id="modalSContentArea"></div>
-        </div>
-    </div>
 
-    <div class="footer">
-        <p>Değişim Koleji Interaktif Takip Sistemi | <span class="highlight">Eğitim Teknoloğu: Barış Hocam</span></p>
+            <h2 class="section-title">🧑‍💻 Sistem Onaylı Öğrenci Profilleri</h2>
+            <div class="student-slider" id="studentSliderGrid">
+                </div>
+
+            <h2 class="section-title">🚀 Aktif Atölye Üsleri</h2>
+            <div class="grid-container" id="workshopsGrid">
+                </div>
+            
+            <div class="feedback-section">
+                <h3>💬 Barış Hocam'a <span>Canlı Havuz</span></h3>
+                <p>Değerli velilerimiz, atölyelerimizle ilgili gözlemlerinizi veya sormak istediklerinizi doğrudan eğitim teknolojileri uzmanımız Barış Hoca'ya iletebilirsiniz.</p>
+                <div class="form-group"><input type="text" id="fbParentName" placeholder="Veli Adı Soyadı"></div>
+                <div class="form-group"><textarea id="fbMessage" placeholder="Örn: Barış hocam, algoritma görevini yaptık..."></textarea></div>
+                <button class="submit-btn" onclick="sendFeedback()">SİSTEME GÜVENLİ GÖNDER 🚀</button>
+            </div>
+        </div>
+
+        <div id="detail-view">
+            <button class="back-btn" onclick="goBack()">
+                <span>◀</span> ANA MERKEZE DÖN
+            </button>
+
+            <div class="detail-header">
+                <div class="detail-icon" id="detailIcon">🧠</div>
+                <div>
+                    <div class="detail-title" id="detailTitle">Atölye Adı</div>
+                    <div style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.9rem; margin-top: 5px;" id="detailCount">Kayıtlı Öğrenci: 0</div>
+                </div>
+            </div>
+
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('mufredatTab', this)">📚 Atölye Müfredatı</button>
+                <button class="tab-btn" onclick="switchTab('ogrenciTab', this)">🧑‍💻 Kayıtlı Öğrenciler & Profiller</button>
+            </div>
+
+            <div class="tab-content active" id="mufredatTab">
+                <div class="curriculum-box vision-box">
+                    <h4>🎯 Atölye Vizyonumuz</h4>
+                    <p id="cVision">Vizyon metni</p>
+                </div>
+                <div class="curriculum-box info-box">
+                    <h4 id="cHafta">📌 Hafta Bilgisi</h4>
+                    <p id="cOgrenim">Öğrenim metni</p>
+                </div>
+                <div class="curriculum-box outcome-box">
+                    <h4>✅ Kazanım (Neler Değişecek?)</h4>
+                    <p id="cCikti">Çıktı metni</p>
+                </div>
+                <div class="curriculum-box homework-box">
+                    <h4>🏠 Ev Görevi (Aile Katılımı)</h4>
+                    <p id="cOdev">Ödev metni</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="ogrenciTab">
+                <div class="student-list-grid" id="studentsListGrid">
+                    </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="studentDetailModal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeStudentModal()">✖</span>
+                <div class="modal-header">
+                    <h2 id="modalSName">Öğrenci Adı</h2>
+                    <p id="modalSRank">Statü</p>
+                </div>
+                <div class="tabs-container" id="modalSTabs"></div>
+                <div id="modalSContentArea"></div>
+            </div>
+        </div>
+
+        <div class="footer" id="main-footer">
+            <p>Değişim Koleji Interaktif Takip Sistemi | <span class="highlight" onclick="showAdminLogin()">Eğitim Teknoloğu: Barış Hocam</span></p>
+        </div>
+    </div> <div id="admin-view">
+        <button class="back-btn" onclick="hideAdminLogin()" style="margin-bottom: 20px;">
+            <span>◀</span> SİSTEME DÖN
+        </button>
+        
+        <div id="loginScreen">
+            <h2>SİSTEM YÖNETİCİSİ</h2>
+            <div class="input-group">
+                <label>E-Posta Adresi</label>
+                <input type="email" id="adminEmail" placeholder="admin@degisim.com">
+            </div>
+            <div class="input-group">
+                <label>Güvenlik Şifresi</label>
+                <input type="password" id="adminPassword" placeholder="••••••••">
+            </div>
+            <button class="admin-login-btn" onclick="loginAdmin()">GİRİŞ YAP</button>
+            <p id="loginError">Hatalı e-posta veya şifre girdiniz.</p>
+        </div>
+
+        <div id="dashboardScreen">
+            <div class="dashboard-header">
+                <h2>KONTROL PANELİ</h2>
+                <button class="logout-btn" onclick="logoutAdmin()">GÜVENLİ ÇIKIŞ</button>
+            </div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:10px; margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="admin-login-btn" style="margin:0; flex:1;" onclick="toggleLessonMode(true)">🔴 DERSİ BAŞLAT (TABLETLERİ KİLİTLE)</button>
+                <button class="admin-login-btn" style="margin:0; flex:1; background:var(--success); border-color:var(--success); color:#000;" onclick="toggleLessonMode(false)">🟢 DERSİ BİTİR (EKRANLARI AÇ)</button>
+            </div>
+
+            <h3 style="color:var(--warning); font-family:'Rajdhani'; margin-bottom:10px;">⚠️ Güvenlik Alarmları (Odak Takibi)</h3>
+            <div id="alarmList" style="margin-bottom:30px; max-height:200px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); padding:10px; border-radius:5px;">
+                <div class="no-msg" style="font-size:0.9rem;">Ders anında başka sekmeye geçen öğrenciler burada raporlanır.</div>
+            </div>
+
+            <h3 style="color:var(--neon-blue); font-family:'Rajdhani'; margin-bottom:10px;">📩 Veli Canlı Havuz Mesajları</h3>
+            <div class="messages-container" id="messagesList">
+                <div class="no-msg">Veritabanı yükleniyor...</div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, push, set, serverTimestamp, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = { apiKey: "API_KEY", authDomain: "DOMAIN", databaseURL: "URL", projectId: "ID", storageBucket: "BUCKET", messagingSenderId: "SENDER", appId: "APP" };
-        let db; try { const app = initializeApp(firebaseConfig); db = getDatabase(app); } catch (e) { }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqeO-yQyQPnLsOqKmSNvVH23WPvneIjaU",
+            authDomain: "shaped-totem-481514-c5.firebaseapp.com",
+            projectId: "shaped-totem-481514-c5",
+            storageBucket: "shaped-totem-481514-c5.firebasestorage.app",
+            messagingSenderId: "519295049418",
+            appId: "1:519295049418:web:7d04e18c4ea36bc088de33"
+        };
+        
+        let db; 
+        let auth;
+        try { 
+            const app = initializeApp(firebaseConfig); 
+            auth = getAuth(app);
+            db = getDatabase(app, "https://shaped-totem-481514-c5-default-rtdb.europe-west1.firebasedatabase.app/"); 
+        } catch (e) { 
+            console.log("DB Bağlantı Hatası", e);
+        }
 
         window.sendFeedback = function() {
             const name = document.getElementById('fbParentName').value;
@@ -331,9 +412,6 @@
                 push(ref(db, 'veli_mesajlari'), { veliAdi: name, mesaj: msg, tarih: serverTimestamp() })
                 .then(() => { alert("✅ Mesajınız Barış Hoca'ya başarıyla iletildi!"); document.getElementById('fbParentName').value = ''; document.getElementById('fbMessage').value = ''; })
                 .catch((e) => alert("Hata: " + e.message));
-            } else {
-                alert("Mesajınız Canlı Havuza Alındı!\n\n(Not: Firebase bilgileri girildiğinde veritabanına kayıt edilecektir.)");
-                document.getElementById('fbMessage').value = '';
             }
         };
 
@@ -386,10 +464,20 @@
             { ad: "Sarp Samsunlu", veli: "Burcu Samsunlu", atolyeler: ["kodlama", "yz", "guvenlik"] },
             { ad: "Yavuz Selim Ertürk", veli: "Nurten Ertürk", atolyeler: ["kodlama", "yz", "guvenlik"] },
             { ad: "Poyraz Mert", veli: "Gülten Mert", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
-            { ad: "Talha İbrahimoğlu", veli: "Canan İbrahimoğlu", atolyeler: ["zeka", "kodlama", "dikkat"] }
+            { ad: "Talha İbrahimoğlu", veli: "Canan İbrahimoğlu", atolyeler: ["zeka", "kodlama", "dikkat"] },
+            { ad: "Emir Gürkan Yazaroğlu", veli: "Burcu Yazaroğlu", atolyeler: ["zeka", "kodlama", "dikkat"] },
+            { ad: "Doruk Yılmaz", veli: "Duygu Yılmaz", atolyeler: ["kodlama", "dikkat", "guvenlik"] },
+            { ad: "Arda Bazoğlu", veli: "Derya Bazoğlu", atolyeler: ["zeka", "kodlama", "yz"] },
+            { ad: "Rami Bekkouche", veli: "Mohammed Laid Bekkouche", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Aybike Özbatı", veli: "Betül Özbatı", atolyeler: ["zeka", "kodlama", "dikkat", "yz", "guvenlik"] },
+            { ad: "Kaan Tuğrul Tatlı", veli: "Zeynep Meral Tatlı", atolyeler: ["kodlama", "yz"] },
+            { ad: "Tahsin Ömür Dikici", veli: "Tahsin Dikici", atolyeler: ["zeka", "kodlama", "dikkat"] },
+            { ad: "Hira Nur Aksu", veli: "Handan Aksu", atolyeler: ["zeka", "kodlama"] }
         ];
 
-        // 1. ANA EKRAN - YATAY ÖĞRENCİ KARTLARI (NEON FENERLİ)
+        document.getElementById('totalStudentCount').innerText = ogrenciler.length;
+
+        // 1. ANA EKRAN - YATAY ÖĞRENCİ KARTLARI
         const sSliderGrid = document.getElementById('studentSliderGrid');
         
         ogrenciler.forEach((ogrenci, index) => {
@@ -399,7 +487,7 @@
 
             let badgesHTML = ogrenci.atolyeler.map(kod => {
                 const data = atolyeData[kod];
-                let shortName = data.ad.split(' ')[1]; // Kısa isim
+                let shortName = data.ad.split(' ')[1];
                 return `<div class="skill-badge ${data.class}"><span class="skill-icon">${data.ikon}</span> ${shortName}</div>`;
             }).join('');
 
@@ -418,7 +506,7 @@
                         <div class="badges-container">${badgesHTML}</div>
                     </div>
                 </div>
-                <button class="view-btn" onclick="openStudentModal(${index})">Öğrenci Detayı 🔍</button>
+                <button class="view-btn" onclick="openStudentModal(${index}); identifyStudent('${ogrenci.ad}')">Öğrenci Detayı 🔍</button>
             `;
             sSliderGrid.appendChild(card);
         });
@@ -464,10 +552,8 @@
             const sGrid = document.getElementById('studentsListGrid');
             sGrid.innerHTML = ''; 
 
-            filteredStudents.forEach((std, sIndex) => {
-                // Öğrencinin asıl indexini bul (Modal açmak için)
+            filteredStudents.forEach((std) => {
                 const realIndex = ogrenciler.findIndex(o => o.ad === std.ad);
-
                 const sCard = document.createElement('div');
                 sCard.className = 'mini-student-card';
                 const initials = std.ad.split(' ').map(n => n[0]).join('').substring(0,2);
@@ -490,20 +576,19 @@
                         <h5>${std.ad}</h5>
                         <p>Veli: ${std.veli}</p>
                         ${badgesHTML}
-                        <button style="margin-top:10px; padding:5px 10px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:#8892b0; border-radius:5px; cursor:pointer; font-size:0.75rem;" onclick="event.stopPropagation(); openStudentModal(${realIndex})">Müfredatı Gör</button>
+                        <button style="margin-top:10px; padding:5px 10px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:#8892b0; border-radius:5px; cursor:pointer; font-size:0.75rem;" onclick="event.stopPropagation(); openStudentModal(${realIndex}); identifyStudent('${std.ad}')">Müfredatı Gör</button>
                     </div>
                 `;
                 sGrid.appendChild(sCard);
             });
 
             switchTab('mufredatTab', document.querySelector('.tab-btn'));
-
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
             window.scrollTo(0, 0);
         };
 
-        // 4. ÖĞRENCİ DETAY MODALI (Yatay menüdeki karta tıklanınca açılır)
+        // 4. ÖĞRENCİ DETAY MODALI
         window.openStudentModal = function(studentIndex) {
             const std = ogrenciler[studentIndex];
             document.getElementById('modalSName').innerText = std.ad;
@@ -520,7 +605,7 @@
                 const data = atolyeData[kod];
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${i === 0 ? 'active' : ''}`;
-                btn.innerText = data.ikon + " " + data.ad.split(' ')[1]; // Kısa ad
+                btn.innerText = data.ikon + " " + data.ad.split(' ')[1];
                 btn.onclick = () => switchStudentTab(i);
                 tabsContainer.appendChild(btn);
 
@@ -563,7 +648,6 @@
             }
         };
 
-        // 5. GERİ DÖN VE ATÖLYE SEKME DEĞİŞTİRME
         window.goBack = function() {
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('main-view').style.display = 'block';
@@ -574,11 +658,168 @@
             container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
 
-            const contentArea = container.nextElementSibling; // mufredatTab veya ogrenciTab olan div'lerin ana kapsayıcısı
+            const contentArea = container.nextElementSibling;
             document.getElementById('mufredatTab').classList.remove('active');
             document.getElementById('ogrenciTab').classList.remove('active');
             document.getElementById(tabId).classList.add('active');
         };
+
+
+        // --- BARIŞ HOCA ODAK KORUYUCU (DERS MODU) ---
+        let currentStudent = localStorage.getItem('loginName') || "Misafir Öğrenci";
+        window.identifyStudent = function(name) {
+            currentStudent = name;
+            localStorage.setItem('loginName', name);
+        }
+
+        if(db) {
+            // Ders Modunu Dinle
+            onValue(ref(db, 'system_status/isLocked'), (snapshot) => {
+                const isLocked = snapshot.val();
+                if(isLocked) {
+                    if(!document.getElementById('focusOverlay')){
+                        document.body.insertAdjacentHTML('beforeend', `
+                            <div id="focusOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                                <div style="font-size:5rem;">🔒</div>
+                                <h1 style="font-family:'Orbitron'; color:var(--neon-blue);">DERS MODU AKTİF</h1>
+                                <p style="color:white; margin-top:20px; font-size:1.2rem;">Barış Hocam ile Atölye Çalışmasındasınız.<br>Lütfen Tabletinizi Bırakıp Eğitmene Odaklanın.</p>
+                            </div>
+                        `);
+                    }
+                } else {
+                    const overlay = document.getElementById('focusOverlay');
+                    if(overlay) overlay.remove();
+                }
+            });
+
+            // Sekme Değiştirme Alarmı (Watchdog)
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && currentStudent !== "Misafir Öğrenci") {
+                    push(ref(db, 'odak_alarmi'), {
+                        ogrenci: currentStudent,
+                        eylem: "Dersten çıktı, başka sekmeye veya uygulamaya geçti!",
+                        tarih: serverTimestamp()
+                    });
+                }
+            });
+        }
+
+        // --- GİZLİ YÖNETİCİ PANELİ İŞLEMLERİ ---
+        window.showAdminLogin = function() {
+            document.getElementById('public-container').style.display = 'none';
+            document.getElementById('admin-view').style.display = 'block';
+        };
+
+        window.hideAdminLogin = function() {
+            document.getElementById('admin-view').style.display = 'none';
+            document.getElementById('public-container').style.display = 'block';
+        };
+
+        window.loginAdmin = function() {
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPassword').value;
+            const errEl = document.getElementById('loginError');
+            if(auth) {
+                signInWithEmailAndPassword(auth, email, pass)
+                    .then(() => { errEl.style.display = 'none'; })
+                    .catch((error) => { errEl.style.display = 'block'; });
+            }
+        };
+
+        window.logoutAdmin = function() {
+            if(auth) {
+                signOut(auth).then(() => {
+                    document.getElementById('dashboardScreen').style.display = 'none';
+                    document.getElementById('loginScreen').style.display = 'block';
+                    document.getElementById('adminPassword').value = '';
+                });
+            }
+        };
+
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboardScreen').style.display = 'block';
+                    fetchMessages();
+                    fetchAlarms();
+                } else {
+                    document.getElementById('dashboardScreen').style.display = 'none';
+                    document.getElementById('loginScreen').style.display = 'block';
+                }
+            });
+        }
+
+        function fetchMessages() {
+            if(!db) return;
+            const msgsRef = ref(db, 'veli_mesajlari');
+            onValue(msgsRef, (snapshot) => {
+                const listEl = document.getElementById('messagesList');
+                listEl.innerHTML = '';
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const msgArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    msgArray.sort((a, b) => b.tarih - a.tarih);
+
+                    msgArray.forEach(msg => {
+                        let timeString = "Bilinmiyor";
+                        if(msg.tarih) {
+                            const date = new Date(msg.tarih);
+                            timeString = date.toLocaleDateString('tr-TR') + ' - ' + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+                        }
+                        const card = document.createElement('div');
+                        card.className = 'message-card';
+                        card.innerHTML = `
+                            <div class="msg-header">
+                                <div class="msg-sender">${msg.veliAdi}</div>
+                                <div class="msg-date">${timeString}</div>
+                            </div>
+                            <div class="msg-content">${msg.mesaj}</div>
+                        `;
+                        listEl.appendChild(card);
+                    });
+                } else {
+                    listEl.innerHTML = '<div class="no-msg" style="font-size:0.9rem;">Henüz hiç mesaj gelmedi. Gelen kutusu boş.</div>';
+                }
+            });
+        }
+
+        // ADMIN: DERS MODU KONTROLÜ
+        window.toggleLessonMode = function(status) {
+            if(db) {
+                set(ref(db, 'system_status/isLocked'), status)
+                .then(() => alert(status ? "DERS MODU BAŞLATILDI: Tüm öğrenci tabletleri kilitlendi!" : "DERS BİTTİ: Kilitler kaldırıldı."));
+            }
+        };
+
+        // ADMIN: ODAK ALARMLARINI ÇEK
+        function fetchAlarms() {
+            if(!db) return;
+            onValue(ref(db, 'odak_alarmi'), (snapshot) => {
+                const alarmContainer = document.getElementById('alarmList');
+                if(!alarmContainer) return;
+                alarmContainer.innerHTML = '';
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const alarmArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    alarmArray.sort((a, b) => b.tarih - a.tarih); // En yeni en üstte
+
+                    alarmArray.forEach(alarm => {
+                        let timeString = "";
+                        if(alarm.tarih) {
+                            const date = new Date(alarm.tarih);
+                            timeString = date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                        }
+                        const item = document.createElement('div');
+                        item.style = "background:rgba(255,0,60,0.1); border:1px solid var(--danger); padding:10px; border-radius:5px; margin-bottom:10px; font-size:0.8rem; color:white;";
+                        item.innerHTML = `⚠️ <strong style="color:var(--warning)">[${timeString}] ${alarm.ogrenci}:</strong> ${alarm.eylem}`;
+                        alarmContainer.appendChild(item);
+                    });
+                } else {
+                    alarmContainer.innerHTML = '<div class="no-msg" style="font-size:0.9rem;">Şu an için kural ihlali yapan öğrenci yok.</div>';
+                }
+            });
+        }
 
     </script>
 </body>
